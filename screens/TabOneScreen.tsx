@@ -1,7 +1,8 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Text, View} from '../components/Themed';
 import {Agenda, AgendaEntry, AgendaSchedule, DateData} from "react-native-calendars";
 import {Component} from "react";
+import ScheduleCapsule from "../components/ScheduleCapsule";
 
 interface State {
   items?: AgendaSchedule;
@@ -34,6 +35,7 @@ export default class TabOneScreen extends Component<State> {
             //    '2017-05-26': {endingDay: true, color: 'gray'}}}
             // monthFormat={'yyyy'}
             // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
+            theme={{backgroundColor: 'white'}}
             //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
             // hideExtraDays={false}
         />
@@ -73,16 +75,9 @@ export default class TabOneScreen extends Component<State> {
   }
 
   renderItem = (reservation: AgendaEntry, isFirst: boolean) => {
-    const fontSize = isFirst ? 16 : 14;
-    const color = isFirst ? 'black' : '#43515c';
-
     return (
-        <TouchableOpacity
-            style={[styles.item, {height: reservation.height}]}
-        >
-          <Text style={{fontSize, color}}>{reservation.name}</Text>
-        </TouchableOpacity>
-    );
+    <ScheduleCapsule/>
+  );
   }
 
   renderEmptyDate = () => {
