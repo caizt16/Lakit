@@ -2,11 +2,14 @@ import styled from "styled-components/native";
 import {View} from "react-native";
 import {Feather} from '@expo/vector-icons';
 
+interface ScheduleCapsuleProps {
+    onPressAction: () => void;
+}
 
-export default function ScheduleCapsule() {
+export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
     return (
         <Background>
-            <Capsule>
+            <Capsule onPress={() => props.onPressAction()}>
                 <Itemize/>
                 <View style={{paddingLeft: 7}}>
                     <Title>Wash Clothes</Title>
@@ -23,7 +26,7 @@ const Background = styled.View`
   padding: 10px;
 `;
 
-const Capsule = styled.View`
+const Capsule = styled.Pressable`
   flex-direction: row;
   align-items: stretch;
   
