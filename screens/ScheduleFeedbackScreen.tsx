@@ -2,27 +2,40 @@ import {Image, Pressable, StyleSheet, View} from "react-native";
 import {Text} from "../components/Themed";
 import Colors from "../constants/Colors";
 import {Ionicons} from "@expo/vector-icons";
+import {useState} from "react";
 
 export default function ScheduleFeedbackScreen() {
+    const [recording, setRecording] = useState(false);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Congratulations! You’ve finished </Text>
             <Text style={styles.subtitle}>Reading Books</Text>
-            <Image source={require('lakit/assets/images/schedule-finished.png')}/>
+            { !recording &&
+                <Image source={require('lakit/assets/images/schedule-finished.png')}/>}
             <View style={styles.recordContainer}>
                 <Text style={styles.recordTitle}>How do you feel ?</Text>
-                <Text style={styles.recordContent}>Press to talk about your feelings</Text>
+                { !recording &&
+                    <View>
+                        <Text style={styles.recordContent}>Press to talk about your feelings</Text>
+                    </View>
+                }
                 <Ionicons.Button
+                    onPress={() => setRecording(!recording)}
                     iconStyle={{margin: 12}}
                     name='mic-circle'
                     size={80}
                     color={Colors.v2.secondary}
                     backgroundColor={Colors.v2.darkSurface}
                 />
-                <Text style={styles.recordContent}>Not feel like talking?</Text>
-                <Pressable style={styles.skipButton} onPress={() => {}}>
-                    <Text style={styles.skipText}>SKIP</Text>
-                </Pressable>
+                { !recording &&
+                    <View>
+                        <Text style={styles.recordContent}>Not feel like talking?</Text>
+                        <Pressable style={styles.skipButton} onPress={() => {}}>
+                            <Text style={styles.skipText}>SKIP</Text>
+                        </Pressable>
+                    </View>
+                }
             </View>
         </View>
     );
