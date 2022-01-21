@@ -131,8 +131,8 @@ export default function ScheduleFeedbackScreen() {
     }
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Congratulations! You’ve finished </Text>
-            <Text style={styles.subtitle}>Reading Books</Text>
+            <Text style={styles.subtitle}>Congratulations! You’ve finished </Text>
+            <Text style={styles.title}>Reading Books</Text>
             { status === 'idle' &&
                 <Image source={require('lakit/assets/images/schedule-finished.png')}/>
             }
@@ -164,11 +164,22 @@ export default function ScheduleFeedbackScreen() {
             }
             { status === 'analyzed' &&
                 <View style={{flex: 1, width: '100%'}}>
-                    <View style={{...styles.recordContainer, flex: 1}}>
+                    <View style={{...styles.recordContainer, alignItems: 'flex-start'}}>
                         <Text style={styles.recordTitle}>Your Feelings</Text>
                         <Text style={styles.recordContent}>{resultText}</Text>
                     </View>
-                    <Text style={{flex: 2}}>sdad</Text>
+                    <View style={{
+                        alignSelf: 'stretch',
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start',
+
+                        padding: 15,
+                        margin: 15,
+                        flex: 3}}>
+                        <Text style={styles.title}>Your Emotions</Text>
+                        <Text style={styles.subtitle}>We have anaylzed your emotions through
+                            your audio</Text>
+                    </View>
                 </View>
             }
         </View>
@@ -182,13 +193,13 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: Colors.v2.background,
     },
-    title: {
+    subtitle: {
         color: Colors.v2.primary,
         fontSize: 17,
         lineHeight: 20,
         padding: 5,
     },
-    subtitle: {
+    title: {
         color: Colors.v2.primary,
         fontSize: 24,
         lineHeight: 28,
@@ -201,7 +212,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         justifyContent: 'flex-start',
 
-        padding: 5,
+        padding: 15,
         margin: 15,
 
         backgroundColor: Colors.v2.darkSurface,
