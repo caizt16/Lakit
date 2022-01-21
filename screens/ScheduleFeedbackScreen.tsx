@@ -35,7 +35,8 @@ const recordingOptions: RecordingOptions = {
 export default function ScheduleFeedbackScreen() {
     const [recording, setRecording] = useState<Audio.Recording>(null as any);
     const [status, setStatus] = useState("idle");
-    const [resultText, setResultText] = useState("");
+    const [recordText, setRecordText] = useState("");
+    const [sentiText, setSentiText] = useState("");
 
     useEffect(() => {
         Audio.requestPermissionsAsync();
@@ -109,8 +110,10 @@ export default function ScheduleFeedbackScreen() {
                 .then(response => response.text())
                 .then(result => {
                     console.log(result)
+                    const resultText = JSON.parse(result).DisplayText;
                     setStatus('analyzed');
-                    setResultText(JSON.parse(result).DisplayText)
+                    setRecordText(resultText);
+                    getSentiment(resultText);
                 })
                 .catch(error => console.log('error', error));
 
@@ -119,6 +122,35 @@ export default function ScheduleFeedbackScreen() {
             stopRecording();
             resetRecording();
         }
+    }
+
+    const getSentiment = async (input: string) => {
+        const headers = new Headers();
+        headers.append("Ocp-Apim-Subscription-Key", Keys.languageServices);
+        headers.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "documents": [
+                {
+                    "id": "1",
+                    "text": input
+                }
+            ]
+        });
+
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: raw,
+        };
+
+        fetch("https://lakit-language-service.cognitiveservices.azure.com/text/analytics/v3.2-preview.1/sentiment?opinionMining=true", requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log(result)
+                setSentiText(JSON.parse(result).documents[0].sentiment);
+            })
+            .catch(error => console.log('error', error));
     }
 
     const micOnPressed = () => {
@@ -166,7 +198,7 @@ export default function ScheduleFeedbackScreen() {
                 <View style={{flex: 1, width: '100%'}}>
                     <View style={{...styles.recordContainer, alignItems: 'flex-start'}}>
                         <Text style={styles.recordTitle}>Your Feelings</Text>
-                        <Text style={styles.recordContent}>{resultText}</Text>
+                        <Text style={styles.recordContent}>{recordText}</Text>
                     </View>
                     <View style={{
                         alignSelf: 'stretch',
@@ -179,6 +211,7 @@ export default function ScheduleFeedbackScreen() {
                         <Text style={styles.title}>Your Emotions</Text>
                         <Text style={styles.subtitle}>We have anaylzed your emotions through
                             your audio</Text>
+                        <Text style={styles.emotionContent}>{sentiText}</Text>
                     </View>
                 </View>
             }
@@ -251,5 +284,13 @@ const styles = StyleSheet.create({
         color: Colors.v2.secondary,
         fontSize: 13,
         lineHeight: 15,
+    },
+    emotionContent: {
+        alignSelf: 'center',
+
+        color: Colors.v2.primary,
+        fontSize: 17,
+        lineHeight: 20,
+        fontWeight: '900',
     },
 });
