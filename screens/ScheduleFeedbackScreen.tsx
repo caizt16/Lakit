@@ -2,41 +2,175 @@ import {Image, Pressable, StyleSheet, View} from "react-native";
 import {Text} from "../components/Themed";
 import Colors from "../constants/Colors";
 import {Ionicons} from "@expo/vector-icons";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import Keys from "../constants/Keys";
+import {Audio} from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import {RecordingOptions} from "expo-av/build/Audio/Recording.types";
+
+const recordingOptions: RecordingOptions = {
+    // android not currently in use. Not getting results from speech to text with .m4a
+    // but parameters are required
+    android: {
+        extension: '.m4a',
+        outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+        audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+        sampleRate: 16000,
+        numberOfChannels: 1,
+        bitRate: 256000,
+    },
+    ios: {
+        extension: '.wav',
+        audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+        sampleRate: 16000,
+        numberOfChannels: 1,
+        bitRate: 256000,
+        linearPCMBitDepth: 16,
+        linearPCMIsBigEndian: false,
+        linearPCMIsFloat: false,
+    },
+    web: {}
+};
 
 export default function ScheduleFeedbackScreen() {
-    const [recording, setRecording] = useState(false);
+    const [recording, setRecording] = useState<Audio.Recording>(null as any);
+    const [status, setStatus] = useState("idle");
+    const [resultText, setResultText] = useState("");
 
+    useEffect(() => {
+        Audio.requestPermissionsAsync();
+    }, []);
+
+    const deleteRecordingFile = async () => {
+        try {
+            const info = await FileSystem.getInfoAsync(recording.getURI() || "");
+            await FileSystem.deleteAsync(info.uri)
+        } catch(error) {
+            console.log("There was an error deleting recording file", error);
+        }
+    }
+
+    const startRecording = async () => {
+        const { status } = await Audio.requestPermissionsAsync();
+        if (status !== 'granted') return;
+
+        setStatus('recording');
+        await Audio.setAudioModeAsync({
+            allowsRecordingIOS: true,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+            playThroughEarpieceAndroid: true,
+        });
+        const recording = new Audio.Recording();
+
+        try {
+            await recording.prepareToRecordAsync(recordingOptions);
+            await recording.startAsync();
+        } catch (error) {
+            console.log(error);
+            stopRecording();
+        }
+
+        setRecording(recording);
+    }
+
+    const stopRecording = async () => {
+        setStatus('processing');
+        try {
+            await recording?.stopAndUnloadAsync();
+        } catch (error) {
+            // Do nothing -- we are already unloaded.
+        }
+    }
+
+    const resetRecording = () => {
+        deleteRecordingFile();
+        setRecording(null as any);
+    };
+
+    const getTranscription = async () => {
+        try {
+            const info = await FileSystem.getInfoAsync(recording.getURI() || "");
+            console.log(`FILE INFO: ${JSON.stringify(info)}`);
+            const buffer = await (await fetch(info.uri)).blob();
+
+            const headers = new Headers();
+            headers.append("Ocp-Apim-Subscription-Key", Keys.speech2text);
+
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: buffer,
+            };
+
+            fetch("https://eastus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US", requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    console.log(result)
+                    setStatus('analyzed');
+                    setResultText(JSON.parse(result).DisplayText)
+                })
+                .catch(error => console.log('error', error));
+
+        } catch(error) {
+            console.log('There was an error reading file', error);
+            stopRecording();
+            resetRecording();
+        }
+    }
+
+    const micOnPressed = () => {
+        if (status === 'idle') {
+            startRecording()
+        } else {
+            stopRecording();
+            getTranscription();
+        }
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Congratulations! You’ve finished </Text>
             <Text style={styles.subtitle}>Reading Books</Text>
-            { !recording &&
-                <Image source={require('lakit/assets/images/schedule-finished.png')}/>}
-            <View style={styles.recordContainer}>
-                <Text style={styles.recordTitle}>How do you feel ?</Text>
-                { !recording &&
-                    <View>
-                        <Text style={styles.recordContent}>Press to talk about your feelings</Text>
+            { status === 'idle' &&
+                <Image source={require('lakit/assets/images/schedule-finished.png')}/>
+            }
+            { !(status === 'analyzed') &&
+                <View style={styles.recordContainer}>
+                    <Text style={styles.recordTitle}>How do you feel ?</Text>
+                    { status === 'idle' &&
+                        <View>
+                            <Text style={styles.recordContent}>Press to talk about your feelings</Text>
+                        </View>
+                    }
+                    <Ionicons.Button
+                        onPress={micOnPressed}
+                        iconStyle={{margin: 12}}
+                        name='mic-circle'
+                        size={80}
+                        color={Colors.v2.secondary}
+                        backgroundColor={Colors.v2.darkSurface}
+                    />
+                    { status === 'idle' &&
+                        <View>
+                            <Text style={styles.recordContent}>Not feel like talking?</Text>
+                            <Pressable style={styles.skipButton} onPress={() => {}}>
+                                <Text style={styles.skipText}>SKIP</Text>
+                            </Pressable>
+                        </View>
+                    }
+                </View>
+            }
+            { status === 'analyzed' &&
+                <View style={{flex: 1, width: '100%'}}>
+                    <View style={{...styles.recordContainer, flex: 1}}>
+                        <Text style={styles.recordTitle}>Your Feelings</Text>
+                        <Text style={styles.recordContent}>{resultText}</Text>
                     </View>
-                }
-                <Ionicons.Button
-                    onPress={() => setRecording(!recording)}
-                    iconStyle={{margin: 12}}
-                    name='mic-circle'
-                    size={80}
-                    color={Colors.v2.secondary}
-                    backgroundColor={Colors.v2.darkSurface}
-                />
-                { !recording &&
-                    <View>
-                        <Text style={styles.recordContent}>Not feel like talking?</Text>
-                        <Pressable style={styles.skipButton} onPress={() => {}}>
-                            <Text style={styles.skipText}>SKIP</Text>
-                        </Pressable>
-                    </View>
-                }
-            </View>
+                    <Text style={{flex: 2}}>sdad</Text>
+                </View>
+            }
         </View>
     );
 }
