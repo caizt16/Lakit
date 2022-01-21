@@ -1,9 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import {Text, View} from '../components/Themed';
 import {Agenda, AgendaEntry, AgendaSchedule, DateData} from "react-native-calendars";
 import {useState} from "react";
 import ScheduleCapsule from "../components/ScheduleCapsule";
 import {ScheduleStackScreenProps} from "../types";
+import Colors from "../constants/Colors";
 
 export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProps<'Main'>) {
   const [items, setItems] = useState<AgendaSchedule>({});
@@ -43,14 +44,6 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
     );
   }
 
-  function renderEmptyDate() {
-    return (
-        <View style={styles.emptyDate}>
-          <Text>This is empty date!</Text>
-        </View>
-    );
-  }
-
   function rowHasChanged(r1: AgendaEntry, r2: AgendaEntry) {
     return r1.name !== r2.name;
   }
@@ -60,31 +53,34 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
     return date.toISOString().split('T')[0];
   }
   return (
-      <Agenda
-          items={items}
-          loadItemsForMonth={loadItems}
-          selected={'2017-05-16'}
-          renderItem={renderItem}
-          renderEmptyDate={renderEmptyDate}
-          rowHasChanged={rowHasChanged}
-          showClosingKnob={true}
-          // markingType={'period'}
-          // markedDates={{
-          //    '2017-05-08': {textColor: '#43515c'},
-          //    '2017-05-09': {textColor: '#43515c'},
-          //    '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
-          //    '2017-05-21': {startingDay: true, color: 'blue'},
-          //    '2017-05-22': {endingDay: true, color: 'gray'},
-          //    '2017-05-24': {startingDay: true, color: 'gray'},
-          //    '2017-05-25': {color: 'gray'},
-          //    '2017-05-26': {endingDay: true, color: 'gray'}}}
-          // monthFormat={'yyyy'}
-          // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
-          theme={{backgroundColor: 'white'}}
-          //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-          // hideExtraDays={false}
-      />
-  );
+      <View style={{flex: 1}}>
+        <View style={{flex: 7}}>
+          <Agenda
+              items={items}
+              loadItemsForMonth={loadItems}
+              selected={'2022-01-16'}
+              renderItem={renderItem}
+              renderDay={() => { return <View/>; }}
+              rowHasChanged={rowHasChanged}
+              showClosingKnob={true}
+              theme={{
+                backgroundColor: Colors.v2.background,
+
+                agendaKnobColor: Colors.v2.primary,
+                dotColor: Colors.v2.primary,
+                selectedDayBackgroundColor: Colors.v2.primary,
+
+                todayTextColor: Colors.v2.secondary,
+              }}
+          />
+        </View>
+        <View style={{flex: 1, justifyContent: 'center', padding: 20}}>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Add new task</Text>
+          </Pressable>
+        </View>
+      </View>
+);
 
 }
 
@@ -94,6 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.v2.background,
   },
   title: {
     fontSize: 20,
@@ -117,5 +114,24 @@ const styles = StyleSheet.create({
     height: 15,
     flex: 1,
     paddingTop: 30
+  },
+
+  button: {
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+
+    backgroundColor: Colors.v2.primary,
+
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 15,
+  },
+  buttonText: {
+    fontWeight: '900',
+    fontSize: 17,
+    lineHeight: 20,
+
+    color: Colors.v2.background,
   }
 });

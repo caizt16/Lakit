@@ -1,6 +1,7 @@
 import styled from "styled-components/native";
 import {View} from "react-native";
 import {Feather} from '@expo/vector-icons';
+import Colors from "../constants/Colors";
 
 interface ScheduleCapsuleProps {
     onPressAction: () => void;
@@ -9,7 +10,8 @@ interface ScheduleCapsuleProps {
 export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
     return (
         <Background>
-            <Capsule onPress={() => props.onPressAction()}>
+            <Capsule style={{backgroundColor: Colors.v2.darkSurface}}
+                     onPress={() => props.onPressAction()}>
                 <Itemize/>
                 <View style={{paddingLeft: 7}}>
                     <Title>Wash Clothes</Title>
@@ -24,6 +26,8 @@ export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
 
 const Background = styled.View`
   padding: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 `;
 
 const Capsule = styled.Pressable`
@@ -31,8 +35,6 @@ const Capsule = styled.Pressable`
   align-items: stretch;
   
   padding: 10px;
-  
-  background: #EFEFEF;
   border-radius: 15px;
 `;
 
