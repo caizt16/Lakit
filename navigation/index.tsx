@@ -15,6 +15,7 @@ import {RootStackParamList} from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ScheduleFeedbackScreen from "../screens/ScheduleFeedbackScreen";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import Colors from "../constants/Colors";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -49,9 +50,34 @@ const Tab = createMaterialTopTabNavigator();
 
 function TopTabNavigator() {
     return (
-        <Tab.Navigator>
-            <Tab.Screen name="TabOne" component={ScheduleMainScreen} />
-            <Tab.Screen name="TabTwo" component={TabTwoScreen} />
+        <Tab.Navigator
+            style={{paddingTop: 30, backgroundColor: Colors.v2.background}}
+            screenOptions={{
+                tabBarStyle: {
+                    alignSelf: "center",
+                    width: '70%',
+                    borderRadius: 100,
+                    shadowOpacity: 0,
+                    shadowRadius: 0,
+                },
+                tabBarIndicatorStyle: {
+                    alignSelf: "center",
+                    width: '38%',
+                    top: 12,
+                    marginLeft: 15,
+                    height: 25,
+                    borderRadius: 100,
+                    backgroundColor: Colors.v2.primary,
+                },
+                tabBarLabelStyle: {
+                    fontWeight: "bold",
+                },
+                tabBarActiveTintColor: Colors.v2.background,
+                tabBarInactiveTintColor: Colors.v2.secondary,
+            }}
+        >
+            <Tab.Screen name="Schedule" component={ScheduleMainScreen} />
+            <Tab.Screen name="Dashboard" component={TabTwoScreen} />
         </Tab.Navigator>
     );
 }
