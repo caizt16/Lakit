@@ -7,6 +7,7 @@ import Keys from "../constants/Keys";
 import {Audio} from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import {RecordingOptions} from "expo-av/build/Audio/Recording.types";
+import LottieView from 'lottie-react-native';
 
 const recordingOptions: RecordingOptions = {
     // android not currently in use. Not getting results from speech to text with .m4a
@@ -176,14 +177,26 @@ export default function ScheduleFeedbackScreen() {
                             <Text style={styles.recordContent}>Press to talk about your feelings</Text>
                         </View>
                     }
-                    <Ionicons.Button
-                        onPress={micOnPressed}
-                        iconStyle={{margin: 12}}
-                        name='mic-circle'
-                        size={80}
-                        color={Colors.v2.secondary}
-                        backgroundColor={Colors.v2.darkSurface}
-                    />
+                    { (status === 'recording' || status === 'processing') &&
+                        <LottieView
+                            autoPlay={true}
+                            style={{
+                                width: 260,
+                                height: 260,
+                            }}
+                            source={require('lakit/assets/animation/sound_wave_loading.json')}
+                        />
+                    }
+                    {!(status === 'processing') &&
+                        <Ionicons.Button
+                            onPress={micOnPressed}
+                            iconStyle={{margin: 12}}
+                            name='mic-circle'
+                            size={80}
+                            color={Colors.v2.secondary}
+                            backgroundColor={Colors.v2.darkSurface}
+                        />
+                    }
                     { status === 'idle' &&
                         <View>
                             <Text style={styles.recordContent}>Not feel like talking?</Text>
@@ -191,6 +204,12 @@ export default function ScheduleFeedbackScreen() {
                                 <Text style={styles.skipText}>SKIP</Text>
                             </Pressable>
                         </View>
+                    }
+                    { status === 'recording' &&
+                        <Text style={styles.recordContent}>Press again to finish the memo.</Text>
+                    }
+                    { status === 'processing' &&
+                        <Text style={styles.recordContent}>Processing...</Text>
                     }
                 </View>
             }
