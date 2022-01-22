@@ -37,7 +37,7 @@ export default function ScheduleFeedbackScreen() {
     const [recording, setRecording] = useState<Audio.Recording>(null as any);
     const [status, setStatus] = useState("idle");
     const [recordText, setRecordText] = useState("");
-    const [sentiText, setSentiText] = useState("");
+    const [emotion, setEmotion] = useState("");
 
     useEffect(() => {
         Audio.requestPermissionsAsync();
@@ -112,7 +112,6 @@ export default function ScheduleFeedbackScreen() {
                 .then(result => {
                     console.log(result)
                     const resultText = JSON.parse(result).DisplayText;
-                    setStatus('analyzed');
                     setRecordText(resultText);
                     getSentiment(resultText);
                 })
@@ -149,7 +148,8 @@ export default function ScheduleFeedbackScreen() {
             .then(response => response.text())
             .then(result => {
                 console.log(result)
-                setSentiText(JSON.parse(result).documents[0].sentiment);
+                setEmotion(JSON.parse(result).documents[0].sentiment);
+                setStatus('analyzed');
             })
             .catch(error => console.log('error', error));
     }
@@ -171,7 +171,7 @@ export default function ScheduleFeedbackScreen() {
             }
             { !(status === 'analyzed') &&
                 <View style={styles.recordContainer}>
-                    <Text style={styles.recordTitle}>How do you feel ?</Text>
+                    <Text style={styles.recordTitle}>{status === 'processing' ? 'Synthesizing...' : 'How do you feel ?'}</Text>
                     { status === 'idle' &&
                         <View>
                             <Text style={styles.recordContent}>Press to talk about your feelings</Text>
@@ -230,7 +230,18 @@ export default function ScheduleFeedbackScreen() {
                         <Text style={styles.title}>Your Emotions</Text>
                         <Text style={styles.subtitle}>We have anaylzed your emotions through
                             your audio</Text>
-                        <Text style={styles.emotionContent}>{sentiText}</Text>
+                        <Image
+                            style={{alignSelf: 'center', margin: 20}}
+                            source={require('lakit/assets/images/positive-emotion.png')}/>
+                        { emotion === 'positive' &&
+                            <Text style={styles.emotionContent}>You are feeling good !</Text>
+                        }
+                        { emotion === 'neutral' &&
+                            <Text style={styles.emotionContent}>You are feeling normal.</Text>
+                        }
+                        { emotion === 'negative' &&
+                            <Text style={styles.emotionContent}>You might need some rest.</Text>
+                        }
                     </View>
                 </View>
             }
