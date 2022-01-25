@@ -14,7 +14,7 @@ export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
                      onPress={() => props.onPressAction()}>
                 <Itemize/>
                 <View style={{paddingLeft: 7}}>
-                    <Title>Wash Clothes</Title>
+                    <Title>Go to the park</Title>
                     <Content>9:30</Content>
                     <Tag text='Music'/>
                 </View>

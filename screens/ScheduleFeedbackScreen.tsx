@@ -164,8 +164,8 @@ export default function ScheduleFeedbackScreen() {
     }
     return (
         <View style={styles.container}>
-            <Text style={styles.subtitle}>Congratulations! You’ve finished </Text>
-            <Text style={styles.title}>Reading Books</Text>
+            <Text style={styles.content}>Congratulations! You’ve finished </Text>
+            <Text style={styles.title}>Go to the park</Text>
             { status === 'idle' &&
                 <Image source={require('lakit/assets/images/schedule-finished.png')}/>
             }
@@ -228,7 +228,7 @@ export default function ScheduleFeedbackScreen() {
                         margin: 15,
                         flex: 3}}>
                         <Text style={styles.title}>Your Emotions</Text>
-                        <Text style={styles.subtitle}>We have anaylzed your emotions through
+                        <Text style={styles.content}>We have anaylzed your emotions through
                             your audio</Text>
                         <Image
                             style={{alignSelf: 'center', margin: 20}}
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: Colors.v2.background,
     },
-    subtitle: {
+    content: {
         color: Colors.v2.primary,
         fontSize: 17,
         lineHeight: 20,

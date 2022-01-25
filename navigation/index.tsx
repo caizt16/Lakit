@@ -10,7 +10,7 @@ import {ColorSchemeName} from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import ScheduleMainScreen from '../screens/ScheduleMainScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import DashboardScreen from '../screens/DashboardScreen';
 import {RootStackParamList} from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ScheduleFeedbackScreen from "../screens/ScheduleFeedbackScreen";
@@ -77,7 +77,7 @@ function TopTabNavigator() {
             }}
         >
             <Tab.Screen name="Schedule" component={ScheduleMainScreen} />
-            <Tab.Screen name="Dashboard" component={TabTwoScreen} />
+            <Tab.Screen name="Dashboard" component={DashboardScreen} />
         </Tab.Navigator>
     );
 }
