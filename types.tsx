@@ -28,6 +28,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 export type SchedulePageParamList = {
   Main: undefined;
   Feedback: undefined;
+  Help: undefined;
 }
 
 export type ScheduleStackScreenProps<Screen extends keyof SchedulePageParamList> = NativeStackScreenProps<

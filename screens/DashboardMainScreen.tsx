@@ -1,10 +1,11 @@
-import {Image, ScrollView, StyleSheet} from 'react-native';
+import {Image, Pressable, ScrollView, StyleSheet} from 'react-native';
 import {Text, View} from '../components/Themed';
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 import {Styles} from "../constants/Styles";
 import Colors from "../constants/Colors";
+import {ScheduleStackScreenProps} from "../types";
 
-export default function DashboardScreen() {
+export default function DashboardMainScreen({navigation}: ScheduleStackScreenProps<'Main'>) {
   return (
       <ScrollView>
         <View style={styles.container}>
@@ -27,7 +28,7 @@ export default function DashboardScreen() {
                 source={require('lakit/assets/images/dashboard-stress.png')}/>
             <Text style={styles.stress}>Strain</Text>
           </View>
-          <View style={styles.tipBackground}>
+          <Pressable style={styles.tipBackground} onPress={() => navigation.navigate('Help')}>
             <View style={{backgroundColor: 'transparent', flexDirection: 'row'}}>
               <Ionicons name="ios-bulb-outline" size={24} color="black" />
               <Text style={styles.tipContent}>
@@ -36,7 +37,7 @@ export default function DashboardScreen() {
               </Text>
             </View>
             <AntDesign name="right" size={24} color="black"/>
-          </View>
+          </Pressable>
           <Image source={require('lakit/assets/images/dashboard-trend.png')}/>
           <View style={styles.dataBackground}>
             <View style={{backgroundColor: 'transparent', flexDirection: 'row'}}>

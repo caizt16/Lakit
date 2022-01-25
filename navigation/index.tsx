@@ -10,12 +10,13 @@ import {ColorSchemeName} from 'react-native';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import ScheduleMainScreen from '../screens/ScheduleMainScreen';
-import DashboardScreen from '../screens/DashboardScreen';
+import DashboardMainScreen from '../screens/DashboardMainScreen';
 import {RootStackParamList} from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ScheduleFeedbackScreen from "../screens/ScheduleFeedbackScreen";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Colors from "../constants/Colors";
+import DashboardHelpScreen from "../screens/DashboardHelpScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -37,7 +38,6 @@ function RootNavigator() {
     return (
         <Stack.Navigator>
             <Stack.Screen name='SchedulePage' component={SchedulePageNavigator} options={{headerShown: false}}/>
-            <Stack.Screen name="Root" component={TopTabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
             <Stack.Group screenOptions={{ presentation: 'modal' }}>
                 <Stack.Screen name="Modal" component={ModalScreen} />
@@ -77,7 +77,7 @@ function TopTabNavigator() {
             }}
         >
             <Tab.Screen name="Schedule" component={ScheduleMainScreen} />
-            <Tab.Screen name="Dashboard" component={DashboardScreen} />
+            <Tab.Screen name="Dashboard" component={DashboardMainScreen}/>
         </Tab.Navigator>
     );
 }
@@ -92,6 +92,7 @@ function SchedulePageNavigator() {
           headerBackTitleVisible: false}}>
           <SchedulePage.Screen name='Main' component={TopTabNavigator} options={{headerShown: false}}/>
           <SchedulePage.Screen name='Feedback' component={ScheduleFeedbackScreen}/>
+          <SchedulePage.Screen name='Help' component={DashboardHelpScreen}/>
       </SchedulePage.Navigator>
     );
 }
