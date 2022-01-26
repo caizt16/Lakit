@@ -17,9 +17,9 @@ export default function DashboardMainScreen({navigation}: ScheduleStackScreenPro
               <Image source={require('lakit/assets/images/dashboard-avatar.png')} />
               <Text style={styles.userName}>Bart</Text>
             </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={styles.profile}>{'My profile >'}</Text>
-            </View>
+            <Pressable style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => navigation.navigate('Support')}>
+              <Text style={styles.profile}>{'Support >'}</Text>
+            </Pressable>
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={styles.content}>Your overall stress level is</Text>

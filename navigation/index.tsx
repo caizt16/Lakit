@@ -17,6 +17,7 @@ import ScheduleFeedbackScreen from "../screens/ScheduleFeedbackScreen";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 import Colors from "../constants/Colors";
 import DashboardHelpScreen from "../screens/DashboardHelpScreen";
+import DashboardSupportScreen from "../screens/DashboardSupportScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -76,7 +77,7 @@ function TopTabNavigator() {
                 tabBarInactiveTintColor: Colors.v2.secondary,
             }}
         >
-            <Tab.Screen name="Schedule" component={ScheduleMainScreen} />
+            <Tab.Screen name="Schedule" component={ScheduleMainScreen}/>
             <Tab.Screen name="Dashboard" component={DashboardMainScreen}/>
         </Tab.Navigator>
     );
@@ -93,6 +94,7 @@ function SchedulePageNavigator() {
           <SchedulePage.Screen name='Main' component={TopTabNavigator} options={{headerShown: false}}/>
           <SchedulePage.Screen name='Feedback' component={ScheduleFeedbackScreen}/>
           <SchedulePage.Screen name='Help' component={DashboardHelpScreen}/>
+          <SchedulePage.Screen name='Support' component={DashboardSupportScreen}/>
       </SchedulePage.Navigator>
     );
 }
