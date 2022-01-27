@@ -26,7 +26,6 @@ export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
                         }
                     </View>
                 </View>
-                <Smile/>
             </Capsule>
         </Background>
     );
@@ -50,11 +49,11 @@ const Title = styled.Text`
   font-size: 18px;
   line-height: 20px;
   
-  color: #6A6A6A;
+  color: ${Colors.v2.secondary};
 `;
 
 const Content = styled.Text`
-  color: #6A6A6A;
+  color: ${Colors.v2.secondary};
 `;
 
 // @ts-ignore
@@ -70,8 +69,7 @@ const TagStyle = styled.View`
   align-self: baseline;
   margin-top: 5px;
   margin-right: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 2px 10px;
   
   border-radius: 15px;
   background-color: #FFFFFF;

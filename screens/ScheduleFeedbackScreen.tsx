@@ -148,8 +148,8 @@ export default function ScheduleFeedbackScreen() {
             .then(response => response.text())
             .then(result => {
                 console.log(result)
-                setEmotion(JSON.parse(result).documents[0].sentiment);
                 setStatus('analyzed');
+                setEmotion(JSON.parse(result).documents[0].sentiment);
             })
             .catch(error => console.log('error', error));
     }
@@ -270,7 +270,6 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     recordContainer: {
-        flex: 1,
         alignItems: 'center',
         alignSelf: 'stretch',
         justifyContent: 'flex-start',
