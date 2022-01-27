@@ -1,5 +1,5 @@
-import {Pressable, StyleSheet} from 'react-native';
-import {Text, View} from '../components/Themed';
+import {StyleSheet} from 'react-native';
+import {View} from '../components/Themed';
 import {Agenda, AgendaEntry, AgendaSchedule, DateData} from "react-native-calendars";
 import {useState} from "react";
 import ScheduleCapsule from "../components/ScheduleCapsule";
@@ -12,21 +12,58 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
   function loadItems(day: DateData) {
 
     setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
+      for (let i = 0; i < 1; i++) {
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = timeToString(time);
 
         if (!items[strTime]) {
           items[strTime] = [];
 
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: 'Item for ' + strTime + ' #' + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-              day: strTime
-            });
-          }
+          items[strTime].push({
+            name: JSON.stringify({
+              title: 'Play badminton',
+              time: '18:00',
+              tags: ['Warm moment']
+            }),
+            height: 0,
+            day: strTime,
+          });
+          items[strTime].push({
+            name: JSON.stringify({
+              title: 'Go to the park',
+              time: '13:40',
+              tags: ['Rain', 'Mind your step'],
+            }),
+            height: 0,
+            day: strTime,
+          });
+          items[strTime].push({
+            name: JSON.stringify({
+              title: 'Look at some photos',
+              time: '10:45',
+              tags: ['Patient'],
+            }),
+            height: 0,
+            day: strTime,
+          });
+          items[strTime].push({
+            name: JSON.stringify({
+              title: 'Wash clothes',
+              time: '10:00',
+              tags: ['Music'],
+            }),
+            height: 0,
+            day: strTime,
+          });
+          items[strTime].push({
+            name: JSON.stringify({
+              title: 'Play chess',
+              time: '9:15',
+              tags: ['Happy time'],
+            }),
+            height: 0,
+            day: strTime,
+          });
         }
       }
 
@@ -38,9 +75,12 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
     }, 1000);
   }
 
-  function renderItem() {
+  const renderItem = (reservation: AgendaEntry) => {
     return (
-        <ScheduleCapsule onPressAction={() => navigation.navigate('Feedback')}/>
+        <ScheduleCapsule
+            onPressAction={() => navigation.navigate('Feedback')}
+            entry={reservation}
+        />
     );
   }
 
@@ -58,7 +98,7 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
           <Agenda
               items={items}
               loadItemsForMonth={loadItems}
-              selected={'2022-01-16'}
+              selected={new Date().toDateString()}
               renderItem={renderItem}
               renderDay={() => { return <View/>; }}
               rowHasChanged={rowHasChanged}
@@ -74,14 +114,16 @@ export default function ScheduleMainScreen({navigation}: ScheduleStackScreenProp
               }}
           />
         </View>
-        <View style={{flex: 1, justifyContent: 'center', padding: 20}}>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Add new task</Text>
-          </Pressable>
-        </View>
       </View>
 );
 
+  /*
+  <View style={{flex: 1, justifyContent: 'center', padding: 20}}>
+    <Pressable style={styles.button}>
+      <Text style={styles.buttonText}>Add new task</Text>
+    </Pressable>
+  </View>
+  */
 }
 
 

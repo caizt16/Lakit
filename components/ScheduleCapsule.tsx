@@ -2,21 +2,29 @@ import styled from "styled-components/native";
 import {View} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import Colors from "../constants/Colors";
+import {AgendaEntry} from "react-native-calendars";
 
 interface ScheduleCapsuleProps {
     onPressAction: () => void;
+    entry: AgendaEntry;
 }
 
 export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
+    const realEntry = JSON.parse(props.entry.name)
     return (
         <Background>
             <Capsule style={{backgroundColor: Colors.v2.darkSurface}}
                      onPress={() => props.onPressAction()}>
-                <Itemize/>
                 <View style={{paddingLeft: 7}}>
-                    <Title>Go to the park</Title>
-                    <Content>9:30</Content>
-                    <Tag text='Music'/>
+                    <Title>{realEntry.title}</Title>
+                    <Content>{realEntry.time}</Content>
+                    <View style={{flexDirection: 'row'}}>
+                        {
+                            realEntry.tags.map((tag) => {
+                                return (<Tag key={tag} text={tag}/>)
+                            })
+                        }
+                    </View>
                 </View>
                 <Smile/>
             </Capsule>
@@ -25,7 +33,7 @@ export default function ScheduleCapsule(props: ScheduleCapsuleProps) {
 }
 
 const Background = styled.View`
-  padding: 10px;
+  padding: 10px 15px;
   margin-left: 10px;
   margin-right: 10px;
 `;
@@ -33,19 +41,9 @@ const Background = styled.View`
 const Capsule = styled.Pressable`
   flex-direction: row;
   align-items: stretch;
-  
-  padding: 10px;
-  border-radius: 15px;
-`;
 
-const Itemize = styled.View`
-  height: 10px;
-  width: 10px;
-  border-radius: 5px;
-  
-  margin-top: 3px;
-  
-  background: #6A6A6A;
+  padding: 10px 30px;
+  border-radius: 15px;
 `;
 
 const Title = styled.Text`
@@ -71,6 +69,7 @@ const Tag = ({text}) => {
 const TagStyle = styled.View`
   align-self: baseline;
   margin-top: 5px;
+  margin-right: 10px;
   padding-left: 10px;
   padding-right: 10px;
   
